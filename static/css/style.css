@@ -21,8 +21,9 @@ body {
 }
 
 .cell.mine {
-    background-color: red;
+    background-color: red; /* Highlight mines in red */
     color: white;
+    font-weight: bold;
 }
 
 .cell.flag::after {
@@ -39,10 +40,86 @@ body {
     margin-bottom: 20px;
 }
 
+#info-table {
+    margin: 0 auto;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 14px;
+}
+
+#info-table td {
+    padding: 6px;
+}
+
+#info-table td:first-child {
+    text-align: right;
+}
+
+#info-table td:last-child {
+    font-weight: bold;
+    text-align: left;
+    font-size: 18px;
+}
+
 #settings {
     margin-bottom: 20px;
 }
 
+#settings-form button {
+    font-size: 18px; /* Increase font size */
+    padding: 10px 20px; /* Add padding for a larger button */
+    background-color: #4CAF50; /* Green background */
+    color: white; /* White text */
+    border: none; /* Remove border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s ease; /* Smooth hover effect */
+}
+
+#settings-form button:hover {
+    background-color: #45a049; /* Darker green on hover */
+}
+
 #leaderboard {
     margin-bottom: 20px;
+}
+
+#leaderboard-table {
+    margin: 0 auto;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+#leaderboard-table th, #leaderboard-table td {
+    border: 1px solid #ddd;
+    padding: 4px;
+    font-size: 14px;
+}
+
+#leaderboard-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+#leaderboard-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+#leaderboard-table tr:hover {
+    background-color: #ddd;
+}
+
+#message {
+    display: block;
+    margin-top: 10px;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+#message.success {
+    color: green;
+}
+
+#message.error {
+    color: red;
 }

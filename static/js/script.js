@@ -3,19 +3,37 @@ document.addEventListener('DOMContentLoaded', function() {
     const minesRemainingElement = document.getElementById('mines-remaining');
     const timerElement = document.getElementById('timer');
     const leaderboardList = document.getElementById('leaderboard-list');
+    const messageElement = document.getElementById('message'); 
     let minesRemaining = parseInt(document.getElementById('mines').textContent) || 0;
     let startTime = true;
 
     function updateMinesRemaining() {
-        minesRemainingElement.textContent = `Mines remaining: ${minesRemaining}`;
+        minesRemainingElement.textContent = `${minesRemaining}`;
     }
 
     function updateTimer() {
         fetch('/time')
             .then(response => response.json())
             .then(data => {
-                timerElement.textContent = `Time: ${data.time}`;
+                timerElement.textContent = `${data.time}`;
             });
+    }
+
+    function showMessage(message, type) {
+        messageElement.textContent = message;
+        messageElement.className = type;
+    }
+
+    function highlightMines(field) {
+        // Highlight all cells that contain mines
+        field.forEach((row, i) => {
+            row.forEach((cell, j) => {
+                if (cell === 'X') { // 'X' represents a mine
+                    const mineCell = document.querySelector(`.cell[data-row="${i}"][data-col="${j}"]`);
+                    mineCell.classList.add('mine'); // Add the 'mine' class
+                }
+            });
+        });
     }
 
     setInterval(updateTimer, 1000);
@@ -24,6 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
         cell.addEventListener('click', function() {
             if (startTime) {
                 startTime = false;
+                startTimer(); // Start the timer on the first click
             }
             const row = cell.getAttribute('data-row');
             const col = cell.getAttribute('data-col');
@@ -49,11 +68,13 @@ document.addEventListener('DOMContentLoaded', function() {
                         });
                     });
                     if (data.won) {
-                        alert(`You won in ${data.time} seconds!`);
+                        showMessage(`You won in ${data.time} seconds!`, 'success');
+                        highlightMines(data.field); // Highlight mines on victory
                         updateLeaderboard(data.time);
                     }
                 } else {
-                    alert('You lost!');
+                    showMessage('You lost!', 'error');
+                    highlightMines(data.field); // Highlight mines on defeat
                     data.revealed.forEach((r, i) => {
                         r.forEach((c, j) => {
                             if (c) {
@@ -90,33 +111,38 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (data.action === 'flag') {
                     data.flags.forEach((r, i) => {
                         r.forEach((c, j) => {
+                            const cell = document.querySelector(`.cell[data-row="${i}"][data-col="${j}"]`);
                             if (c) {
-                                const cell = document.querySelector(`.cell[data-row="${i}"][data-col="${j}"]`);
                                 cell.classList.add('flag');
                             } else {
-                                const cell = document.querySelector(`.cell[data-row="${i}"][data-col="${j}"]`);
                                 cell.classList.remove('flag');
                             }
                         });
                     });
                     minesRemaining = data.minesRemaining;
                     updateMinesRemaining();
+
+                    if (data.won) {
+                        showMessage(`You won in ${data.time} seconds!`, 'success');
+                        highlightMines(data.field); // Highlight mines on victory
+                        updateLeaderboard(data.time);
+                    }
                 }
             });
-        });        
-
+        });
     });
 
-    function updateLeaderboard(time) {
-        leaderboardList.innerHTML = '';
+    function updateLeaderboard() {
+        const leaderboardTableBody = document.querySelector('#leaderboard-table tbody');
+        leaderboardTableBody.innerHTML = ''; // Clear the existing table
         fetch('/')
             .then(response => response.text())
             .then(html => {
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(html, 'text/html');
-                const leaderboardItems = doc.querySelectorAll('#leaderboard-list li');
-                leaderboardItems.forEach(item => {
-                    leaderboardList.appendChild(item.cloneNode(true));
+                const leaderboardRows = doc.querySelectorAll('#leaderboard-table tbody tr');
+                leaderboardRows.forEach(row => {
+                    leaderboardTableBody.appendChild(row.cloneNode(true));
                 });
             });
     }
@@ -137,6 +163,16 @@ function applySettings() {
     .then(data => {
         if (data.success) {
             location.reload();
+            startTimer(); // Start the timer when the game is reset
+        }
+    });
+}
+
+function startTimer() {
+    fetch('/start_timer', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
         }
     });
 }

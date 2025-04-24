@@ -9,8 +9,17 @@
 <body>
     <h1>Minesweeper</h1>
     <div id="info">
-        <span id="mines-remaining">Mines remaining: {{ mines }}</span>
-        <span id="timer">Time: 0</span>
+        <table id="info-table">
+            <tr>
+                <td>Mines:</td>
+                <td id="mines-remaining">{{ mines }}</td>
+            </tr>
+            <tr>
+                <td>Time:</td>
+                <td id="timer">0</td>
+            </tr>
+        </table>
+        <span id="message"></span>
     </div>
     <div id="settings">
         <h2>Settings</h2>
@@ -21,16 +30,9 @@
             <input type="number" id="cols" name="cols" value="{{ cols }}" min="5" max="20">
             <label for="mines">Mines:</label>
             <input type="number" id="mines" name="mines" value="{{ mines }}" min="5" max="50">
-            <button type="button" onclick="applySettings()">Apply Settings</button>
+            <br><br>
+            <button type="button" onclick="applySettings()">START</button>
         </form>
-    </div>
-    <div id="leaderboard">
-        <h2>Leaderboard</h2>
-        <ul id="leaderboard-list">
-            {% for entry in leaderboard %}
-            <li>{{ entry.time }}s</li>
-            {% endfor %}
-        </ul>
     </div>
     <table id="minesweeper-field">
         {% for row in range(rows) %}
@@ -41,6 +43,27 @@
         </tr>
         {% endfor %}
     </table>
+    <div id="leaderboard">
+        <h2>Leaderboard</h2>
+        <table id="leaderboard-table">
+            <thead>
+                <tr>
+                    <th>IP</th>
+                    <th>Date and Time</th>
+                    <th>Time (s)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in leaderboard %}
+                <tr>
+                    <td>{{ entry.ip }}</td>
+                    <td>{{ entry.date }} {{ entry.time_of_day }}</td>
+                    <td style="text-align: right;">{{ entry.time }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>
