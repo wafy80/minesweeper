@@ -1,0 +1,48 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+
+#minesweeper-field {
+    margin: 0 auto;
+    border-collapse: collapse;
+}
+
+.cell {
+    width: 30px;
+    height: 30px;
+    border: 1px solid #000;
+    cursor: pointer;
+    position: relative;
+}
+
+.cell.revealed {
+    background-color: darkgrey;
+}
+
+.cell.mine {
+    background-color: red;
+    color: white;
+}
+
+.cell.flag::after {
+    content: '🚩';
+    color: blue;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 20px;
+}
+
+#info {
+    margin-bottom: 20px;
+}
+
+#settings {
+    margin-bottom: 20px;
+}
+
+#leaderboard {
+    margin-bottom: 20px;
+}
