@@ -195,4 +195,4 @@ def settings():
     return jsonify({'success': True, 'rows': rows, 'cols': cols, 'mines': mines})
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0')
